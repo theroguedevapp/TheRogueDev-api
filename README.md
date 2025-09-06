@@ -93,3 +93,6 @@ Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICEN
 - **Email:** theroguedevapp@gmail.com
 
 Vamos evoluir juntos como em um roguelike: cada tentativa nos torna mais fortes! 🚀
+
+
+## [JIRA DO PROJETO](https://leonidasbestevam.atlassian.net/jira/software/projects/ROGUE/boards/1?atlOrigin=eyJpIjoiNTBmMWU1YWU4ZWM0NDU3MDg3Zjg5ZDM0NWYxZDFjYmIiLCJwIjoiaiJ9)
