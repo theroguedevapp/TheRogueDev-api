@@ -31,8 +31,7 @@ CREATE TABLE users (
 
 CREATE TABLE user_profiles (
     user_id UUID PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
+    name VARCHAR(255),
     profile_pic_url TEXT,
     profile_banner_url TEXT,
     biography VARCHAR(255),
