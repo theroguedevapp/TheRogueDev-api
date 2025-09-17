@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.user.controller;
 
 
+import br.com.theroguedev.api.config.JWTUserData;
 import br.com.theroguedev.api.user.dto.request.UserProfileRequest;
 import br.com.theroguedev.api.user.dto.request.UserRequest;
 import br.com.theroguedev.api.user.dto.response.UserProfileResponse;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +33,7 @@ public class UserProfileController {
 
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:get_all')")
     public ResponseEntity<List<UserProfileResponse>> getAll() {
         return ResponseEntity.ok(userProfileService.findAll()
                 .stream()
@@ -37,9 +41,24 @@ public class UserProfileController {
                 .toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:get_by_id')")
     public ResponseEntity<UserProfileResponse> getById(@PathVariable UUID id) {
         return userProfileService.findById(id)
+                .map(userProfile -> ResponseEntity.ok(userProfileMapper.toResponse(userProfile)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:get_by_username')")
+    public ResponseEntity<UserProfileResponse> getByUsername(@PathVariable String username) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        JWTUserData userData = (JWTUserData) authentication.getPrincipal();
+
+
+        return userProfileService.findById(userData.id())
                 .map(userProfile -> ResponseEntity.ok(userProfileMapper.toResponse(userProfile)))
                 .orElse(ResponseEntity.notFound().build());
     }

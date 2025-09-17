@@ -29,7 +29,7 @@ public class SystemRole {
     private String description;
 
     @Column(name = "is_active")
-    private Boolean isActive = true;
+    private Boolean isActive;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

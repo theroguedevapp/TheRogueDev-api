@@ -2,7 +2,6 @@ package br.com.theroguedev.api.user.service;
 
 import br.com.theroguedev.api.user.entity.Permission;
 import br.com.theroguedev.api.user.entity.SystemRole;
-import br.com.theroguedev.api.user.repository.PermissionRepository;
 import br.com.theroguedev.api.user.repository.SystemRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class SystemRoleService {
     }
 
     public Optional<SystemRole> findByName(String name) {
-        return  repository.findByName(name);
+        return repository.findByName(name);
     }
 
     @Transactional
@@ -37,6 +36,27 @@ public class SystemRoleService {
         systemRole.setIsActive(true);
         systemRole.setPermissions(this.findPermissions(systemRole.getPermissions()));
         return repository.save(systemRole);
+    }
+
+    @Transactional
+    public Optional<SystemRole> changePermissions(Long systemRoleId, List<Long> permissionsIds) {
+        Optional<SystemRole> optSystemRole = repository.findById(systemRoleId);
+
+        if (optSystemRole.isPresent()) {
+            List<Permission> permissions = permissionsIds.stream()
+                    .map(permissionId -> Permission.builder().id(permissionId).build())
+                    .toList();
+
+            List<Permission> permissionsFound = findPermissions(permissions);
+            SystemRole systemRole = optSystemRole.get();
+
+            systemRole.setPermissions(permissionsFound);
+
+            repository.save(systemRole);
+            return Optional.of(systemRole);
+        }
+
+        return Optional.empty();
     }
 
     private List<Permission> findPermissions(List<Permission> permissions) {

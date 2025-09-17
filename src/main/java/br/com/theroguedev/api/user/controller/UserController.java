@@ -14,6 +14,7 @@ import br.com.theroguedev.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class UserController {
 
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user:get_all')")
     public ResponseEntity<List<UserResponse>> getAll() {
         return ResponseEntity.ok(userService.findAll()
                 .stream()
@@ -36,14 +38,24 @@ public class UserController {
                 .toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user:get_by_id')")
     public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
         return userService.findById(id)
                 .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user:get_by_username')")
+    public ResponseEntity<UserResponse> getByUsername(@PathVariable String username) {
+        return userService.findByUsername(username)
+                .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user:create')")
     public ResponseEntity<UserResponse> save(@RequestBody UserRequest request) {
         User newUser = userMapper.toUser(request);
         User savedUser = userService.save(newUser, request.name());
