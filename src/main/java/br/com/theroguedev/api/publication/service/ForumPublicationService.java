@@ -31,6 +31,10 @@ public class ForumPublicationService {
         return repository.findById(id);
     }
 
+    public Optional<ForumPublication> findByIdWithChildren(UUID id) {
+        return repository.findByIdWithChildren(id);
+    }
+
     public ForumPublication save(ForumPublication forumPublication, UUID userId) {
         List<User> authors = forumPublication.getAuthors();
         if (authors == null) {

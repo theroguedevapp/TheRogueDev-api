@@ -1,17 +1,18 @@
 package br.com.theroguedev.api.publication.mapper;
 
 import br.com.theroguedev.api.publication.dto.request.ForumPublicationRequest;
-import br.com.theroguedev.api.publication.dto.request.StatusRequest;
 import br.com.theroguedev.api.publication.dto.response.ForumPublicationResponse;
-import br.com.theroguedev.api.publication.dto.response.StatusResponse;
-import br.com.theroguedev.api.publication.entity.*;
+import br.com.theroguedev.api.publication.dto.response.ForumPublicationWithChildrenResponse;
+import br.com.theroguedev.api.publication.entity.ForumPublication;
+import br.com.theroguedev.api.publication.entity.Tool;
+import br.com.theroguedev.api.publication.entity.Topic;
+import br.com.theroguedev.api.publication.entity.Type;
 import br.com.theroguedev.api.user.dto.response.UserProfileResponse;
 import br.com.theroguedev.api.user.entity.User;
 import br.com.theroguedev.api.user.entity.UserProfile;
 import br.com.theroguedev.api.user.mapper.UserProfileMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,17 @@ public interface ForumPublicationMapper {
     @Mapping(target = "authors", source = "authors")
     ForumPublicationResponse toResponse(ForumPublication entity);
 
+    @Mapping(target = "submittedBy", source = "submittedBy")
+    @Mapping(target = "authors", source = "authors")
+    @Mapping(target = "children", source = "children")
+    ForumPublicationWithChildrenResponse toResponseWithChildren(ForumPublication entity);
+
+    default List<ForumPublicationResponse> mapChildren(List<ForumPublication> children) {
+        if (children == null) return List.of();
+        return children.stream()
+                .map(this::toResponse)
+                .toList();
+    }
 
     default ForumPublication mapParentIdToParent(UUID parentId) {
         return ForumPublication.builder().id(parentId).build();

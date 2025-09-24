@@ -1,6 +1,8 @@
 package br.com.theroguedev.api.publication.entity;
 
 import br.com.theroguedev.api.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,12 +35,17 @@ public class ForumPublication {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
 
-    @Column(name = "image_url",columnDefinition = "TEXT")
+    @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @JsonBackReference
     private ForumPublication parent;
+
+    @OneToMany(mappedBy = "parent")
+    @JsonManagedReference
+    private List<ForumPublication> children;
 
     @ManyToOne
     @JoinColumn(name = "submitted_by", nullable = false)
