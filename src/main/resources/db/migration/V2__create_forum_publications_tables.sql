@@ -19,7 +19,7 @@ CREATE TABLE publication_types (
 CREATE TABLE forum_publications (
     forum_publication_id UUID PRIMARY KEY,
     slug VARCHAR(255) NOT NULL UNIQUE,
-    title VARCHAR(255),
+    title VARCHAR(255) NOT NULL,
     body TEXT NOT NULL,
     image_url TEXT,
     parent_id UUID REFERENCES forum_publications(forum_publication_id),
@@ -32,14 +32,14 @@ CREATE TABLE forum_publications (
     deleted_at TIMESTAMP DEFAULT NULL
 );
 
-CREATE TABLE forum_publication_authors (
+CREATE TABLE forum_publications_authors (
     forum_publication_id UUID NOT NULL REFERENCES forum_publications(forum_publication_id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES users(user_id),
     PRIMARY KEY (forum_publication_id, user_id)
 );
 
 CREATE TABLE publication_tools (
-    publication_tools_id SERIAL PRIMARY KEY,
+    publication_tool_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     hex_color VARCHAR(9),
     description TEXT,
@@ -49,14 +49,14 @@ CREATE TABLE publication_tools (
 );
 
 CREATE TABLE forum_publications_tools (
-    forum_publications_tools_id SERIAL PRIMARY KEY,
+    forum_publication_tool_id SERIAL PRIMARY KEY,
     forum_publication_id UUID NOT NULL REFERENCES forum_publications(forum_publication_id) ON DELETE CASCADE,
-    publication_tools_id INT NOT NULL REFERENCES publication_tools(publication_tools_id) ON DELETE CASCADE,
-    UNIQUE (forum_publication_id, publication_tools_id)
+    publication_tool_id INT NOT NULL REFERENCES publication_tools(publication_tool_id) ON DELETE CASCADE,
+    UNIQUE (forum_publication_id, publication_tool_id)
 );
 
 CREATE TABLE publication_topics (
-    publication_topics_id SERIAL PRIMARY KEY,
+    publication_topic_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     hex_color VARCHAR(9),
     description TEXT,
@@ -66,13 +66,8 @@ CREATE TABLE publication_topics (
 );
 
 CREATE TABLE forum_publications_topics (
-    forum_publications_topics_id SERIAL PRIMARY KEY,
+    forum_publication_topic_id SERIAL PRIMARY KEY,
     forum_publication_id UUID NOT NULL REFERENCES forum_publications(forum_publication_id) ON DELETE CASCADE,
-    publication_topics_id INT NOT NULL REFERENCES publication_topics(publication_topics_id) ON DELETE CASCADE,
-    UNIQUE (forum_publication_id, publication_topics_id)
+    publication_topic_id INT NOT NULL REFERENCES publication_topics(publication_topic_id) ON DELETE CASCADE,
+    UNIQUE (forum_publication_id, publication_topic_id)
 );
-
-INSERT INTO publication_types (name, description) VALUES
-('article', 'Artigo inicial em fórum'),
-('question', 'Pergunta inicial em fórum'),
-('comment', 'Comentário em publicação de fórum');

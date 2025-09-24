@@ -1,5 +1,6 @@
 package br.com.theroguedev.api.config;
 
+import br.com.theroguedev.api.exceptions.CustomNotFoundException;
 import br.com.theroguedev.api.exceptions.UnauthorizedException;
 import br.com.theroguedev.api.exceptions.UsernameOrPasswordInvalidException;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,11 @@ public class ApplicationControllerAdvice {
         return exception.getMessage();
     }
 
+    @ExceptionHandler(CustomNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleCustomNotFoundException(CustomNotFoundException exception) {
+        return exception.getMessage();
+    }
 
 
 }
