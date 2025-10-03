@@ -3,15 +3,10 @@ package br.com.theroguedev.api.currency.virtual.controller;
 
 import br.com.theroguedev.api.config.JWTUserData;
 import br.com.theroguedev.api.currency.virtual.dto.request.TransactionRequest;
-import br.com.theroguedev.api.currency.virtual.dto.request.UserWalletRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.TransactionResponse;
-import br.com.theroguedev.api.currency.virtual.dto.response.UserWalletResponse;
 import br.com.theroguedev.api.currency.virtual.entity.Transaction;
-import br.com.theroguedev.api.currency.virtual.entity.UserWallet;
 import br.com.theroguedev.api.currency.virtual.mapper.TransactionMapper;
-import br.com.theroguedev.api.currency.virtual.mapper.UserWalletMapper;
 import br.com.theroguedev.api.currency.virtual.service.TransactionService;
-import br.com.theroguedev.api.currency.virtual.service.UserWalletService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +28,7 @@ public class TransactionController {
     private final TransactionMapper transactionMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_all')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction:get_all')")
     public ResponseEntity<List<TransactionResponse>> getAll() {
         return ResponseEntity.ok(transactionService.findAll()
                 .stream()
@@ -42,7 +37,7 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_by_id')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction:get_by_id')")
     public ResponseEntity<TransactionResponse> getById(@PathVariable UUID id) {
         return transactionService.findById(id)
                 .map(type -> ResponseEntity.ok(transactionMapper.toResponse(type)))
@@ -50,7 +45,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:create')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction:create')")
     public ResponseEntity<TransactionResponse> save(@RequestBody @Valid TransactionRequest request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

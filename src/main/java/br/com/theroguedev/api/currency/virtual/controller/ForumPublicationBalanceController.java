@@ -25,7 +25,7 @@ public class ForumPublicationBalanceController {
     private final ForumPublicationBalanceMapper forumPublicationBalanceMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_all')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication_balance:get_all')")
     public ResponseEntity<List<ForumPublicationBalanceResponse>> getAll() {
         return ResponseEntity.ok(forumPublicationBalanceService.findAll()
                 .stream()
@@ -34,7 +34,7 @@ public class ForumPublicationBalanceController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_by_id')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication_balance:get_by_id')")
     public ResponseEntity<ForumPublicationBalanceResponse> getById(@PathVariable UUID id) {
         return forumPublicationBalanceService.findById(id)
                 .map(type -> ResponseEntity.ok(forumPublicationBalanceMapper.toResponse(type)))
@@ -42,7 +42,7 @@ public class ForumPublicationBalanceController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:create')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication_balance:create')")
     public ResponseEntity<ForumPublicationBalanceResponse> save(@RequestBody @Valid ForumPublicationBalanceRequest request) {
         ForumPublicationBalance newForumPublicationBalance = forumPublicationBalanceMapper.toForumPublicationBalance(request);
         ForumPublicationBalance savedForumPublicationBalance = forumPublicationBalanceService.save(newForumPublicationBalance);

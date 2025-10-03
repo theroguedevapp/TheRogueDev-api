@@ -8,8 +8,8 @@ CREATE TABLE transaction_types (
 
 CREATE TABLE virtual_currencies (
     virtual_currency_id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    symbol VARCHAR(10),
+    name VARCHAR(100) NOT NULL UNIQUE,
+    symbol VARCHAR(10) UNIQUE,
     exchange_rate DECIMAL(10,4) DEFAULT 1,
     description TEXT,
     created_at TIMESTAMP DEFAULT NOW(),
@@ -49,6 +49,31 @@ CREATE TABLE virtual_currency_transactions (
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE virtual_currency_transaction_parameters (
+    virtual_currency_transaction_parameter_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    cost BIGINT DEFAULT 0,
+    reward BIGINT DEFAULT 0,
+    virtual_currency_id INT NOT NULL REFERENCES virtual_currencies(virtual_currency_id),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO virtual_currencies (name, symbol, exchange_rate, description) VALUES
+('RogueDollar', 'RD', 1.0000, 'Moeda virtual oficial para recompensas e interações dentro da plataforma.');
+
+INSERT INTO virtual_currency_transaction_parameters (name, description, cost, reward, virtual_currency_id) VALUES
+('create_forum_article', 'Usuário ganha 20 moedas ao criar um artigo', 0, 200, 1),
+('create_forum_question', 'Usuário ganha 20 moedas ao criar uma questão', 0, 200, 1),
+('create_forum_comment', 'Usuário ganha 20 moedas ao criar um comentário', 0, 75, 1),
+('give_like_forum_article', 'Custa 5 moedas para dar like em um artigo', 50, 0, 1),
+('give_dislike_forum_article', 'Custa 5 moedas para dar dislike  em um artigo', 50, 0, 1),
+('give_like_forum_question', 'Custa 5 moedas para dar like em uma questão', 50, 0, 1),
+('give_dislike_forum_question', 'Custa 3 moedas para dar dislike em uma questão', 50, 0, 1),
+('give_like_forum_comment', 'Custa 3 moedas para dar like em um comentário', 25, 0, 1),
+('give_dislike_forum_comment', 'Custa 3 moedas para dar dislike em um comentário', 25, 0, 1);
 
 INSERT INTO transaction_types (name, description) VALUES
 ('EARN', 'Crédito de moedas por interações ou submissões'),

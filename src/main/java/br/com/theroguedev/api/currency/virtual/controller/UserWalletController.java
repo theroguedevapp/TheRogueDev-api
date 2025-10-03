@@ -25,7 +25,7 @@ public class UserWalletController {
     private final UserWalletMapper userWalletMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_all')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_wallet:get_all')")
     public ResponseEntity<List<UserWalletResponse>> getAll() {
         return ResponseEntity.ok(userWalletService.findAll()
                 .stream()
@@ -34,7 +34,7 @@ public class UserWalletController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_by_id')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_wallet:get_by_id')")
     public ResponseEntity<UserWalletResponse> getById(@PathVariable UUID id) {
         return userWalletService.findById(id)
                 .map(type -> ResponseEntity.ok(userWalletMapper.toResponse(type)))
@@ -42,7 +42,7 @@ public class UserWalletController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:create')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_wallet:create')")
     public ResponseEntity<UserWalletResponse> save(@RequestBody @Valid UserWalletRequest request) {
         UserWallet newUserWallet = userWalletMapper.toUserWallet(request);
         UserWallet savedUserWallet = userWalletService.save(newUserWallet);
