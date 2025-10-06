@@ -8,7 +8,7 @@ Perfeito para comunidades de estudo, bootcamps ou times de devs que querem apren
 Novo app para comunidades de estudo: crie grupos pequenos, organize agendas, discuta tópicos, compartilhe links e acompanhe dashboards de contribuições. Colaboração e aprendizado em um só lugar!
 
 ## ✨ O que você vai encontrar:
-- 👥 **Criação de grupos pequenos** (5–15 pessoas)  
+- 👥 **Criação de grupos pequenos** (3–15 pessoas)  
 - 🗓️ **Agendas semanais e diárias**  
 - 💬 **Discussões em tópicos organizados**  
 - 🔗 **Links centralizados** (Discord, GitHub, LinkedIn, etc.)  
@@ -84,9 +84,6 @@ timeline
 
 ## Como Contribuir
 Estamos abertos a contribuições! Fork o repositório, crie uma branch para sua feature ou fix, e envie um pull request. Certifique-se de seguir as boas práticas de código e adicionar testes onde possível.
-
-## Licença
-Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ## Contato
 - **Autor:** LeonidasBE
