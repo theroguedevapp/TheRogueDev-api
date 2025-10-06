@@ -68,12 +68,12 @@ INSERT INTO virtual_currency_transaction_parameters (name, description, cost, re
 ('create_forum_article', 'Usuário ganha 20 moedas ao criar um artigo', 0, 200, 1),
 ('create_forum_question', 'Usuário ganha 20 moedas ao criar uma questão', 0, 200, 1),
 ('create_forum_comment', 'Usuário ganha 20 moedas ao criar um comentário', 0, 75, 1),
-('give_like_forum_article', 'Custa 5 moedas para dar like em um artigo', 50, 0, 1),
-('give_dislike_forum_article', 'Custa 5 moedas para dar dislike  em um artigo', 50, 0, 1),
-('give_like_forum_question', 'Custa 5 moedas para dar like em uma questão', 50, 0, 1),
-('give_dislike_forum_question', 'Custa 3 moedas para dar dislike em uma questão', 50, 0, 1),
-('give_like_forum_comment', 'Custa 3 moedas para dar like em um comentário', 25, 0, 1),
-('give_dislike_forum_comment', 'Custa 3 moedas para dar dislike em um comentário', 25, 0, 1);
+('upvote_forum_article', 'Custa 5 moedas para dar like em um artigo', 50, 0, 1),
+('downvote_forum_article', 'Custa 5 moedas para dar dislike  em um artigo', 50, 0, 1),
+('upvote_forum_question', 'Custa 5 moedas para dar like em uma questão', 50, 0, 1),
+('downvote_forum_question', 'Custa 3 moedas para dar dislike em uma questão', 50, 0, 1),
+('upvote_forum_comment', 'Custa 3 moedas para dar like em um comentário', 25, 0, 1),
+('downvote_forum_comment', 'Custa 3 moedas para dar dislike em um comentário', 25, 0, 1);
 
 INSERT INTO transaction_types (name, description) VALUES
 ('EARN', 'Crédito de moedas por interações ou submissões'),

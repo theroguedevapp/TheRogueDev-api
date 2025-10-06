@@ -28,6 +28,10 @@ public class TransactionParameterService {
         return repository.findById(id);
     }
 
+    public Optional<TransactionParameter> findByName(String name) {
+        return repository.findByName(name);
+    }
+
     @Transactional
     public TransactionParameter save(TransactionParameter transaction) {
         transaction.setVirtualCurrency(findVirtualCurrencyById(transaction.getVirtualCurrency().getId()));

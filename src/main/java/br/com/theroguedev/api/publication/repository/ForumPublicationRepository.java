@@ -11,6 +11,8 @@ import java.util.UUID;
 
 public interface ForumPublicationRepository extends JpaRepository<ForumPublication, UUID> {
 
+    Optional<ForumPublication> findBySlug(String slug);
+
     List<ForumPublication> findAllBySlugStartingWith(String slug);
 
     @EntityGraph(attributePaths = {"children", "children.children", "children.children.children"})

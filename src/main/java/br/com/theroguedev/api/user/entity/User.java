@@ -1,5 +1,6 @@
 package br.com.theroguedev.api.user.entity;
 
+import br.com.theroguedev.api.currency.virtual.entity.UserWallet;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -58,6 +59,9 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserProfile userProfile;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<UserWallet> wallets;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -22,6 +22,10 @@ public class TransactionTypeService {
         return repository.findById(id);
     }
 
+    public Optional<TransactionType> findByName(String name) {
+        return repository.findByName(name);
+    }
+
     public TransactionType save(TransactionType type) {
         return repository.save(type);
     }

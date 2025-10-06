@@ -7,6 +7,7 @@ import br.com.theroguedev.api.currency.virtual.dto.response.TransactionResponse;
 import br.com.theroguedev.api.currency.virtual.entity.Transaction;
 import br.com.theroguedev.api.currency.virtual.mapper.TransactionMapper;
 import br.com.theroguedev.api.currency.virtual.service.TransactionService;
+import br.com.theroguedev.api.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -52,9 +53,10 @@ public class TransactionController {
 
         JWTUserData userData = (JWTUserData) authentication.getPrincipal();
 
-
         Transaction newTransaction = transactionMapper.toTransaction(request);
-        Transaction savedTransaction = transactionService.save(newTransaction, userData.id());
+        newTransaction.setUser(User.builder().id(userData.id()).build());
+
+        Transaction savedTransaction = transactionService.save(newTransaction);
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionMapper.toResponse(savedTransaction));
     }
 

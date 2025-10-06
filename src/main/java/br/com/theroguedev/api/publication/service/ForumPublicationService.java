@@ -1,5 +1,7 @@
 package br.com.theroguedev.api.publication.service;
 
+import br.com.theroguedev.api.currency.virtual.entity.*;
+import br.com.theroguedev.api.currency.virtual.service.*;
 import br.com.theroguedev.api.exceptions.CustomNotFoundException;
 import br.com.theroguedev.api.publication.entity.*;
 import br.com.theroguedev.api.publication.repository.ForumPublicationRepository;
@@ -21,6 +23,11 @@ public class ForumPublicationService {
     private final TypeService typeService;
     private final TopicService topicService;
     private final ToolService toolService;
+    private final VirtualCurrencyService virtualCurrencyService;
+    private final TransactionService transactionService;
+    private final TransactionTypeService transactionTypeService;
+    private final TransactionParameterService transactionParameterService;
+    private final UserWalletService userWalletService;
 
 
     public List<ForumPublication> findAll() {
@@ -35,6 +42,7 @@ public class ForumPublicationService {
         return repository.findByIdWithChildren(id);
     }
 
+    @Transactional
     public ForumPublication save(ForumPublication forumPublication, UUID userId) {
         List<User> authors = forumPublication.getAuthors();
         if (authors == null) {
@@ -42,9 +50,12 @@ public class ForumPublicationService {
         }
         authors.add(findUserById(userId));
 
+        if (forumPublication.getParent() != null) {
+            forumPublication.setParent(findParentById(forumPublication.getParent().getId()));
+        }
+
         forumPublication.setAuthors(findUsersByUsername(authors));
         forumPublication.setSubmittedBy(findUserById(userId));
-        forumPublication.setParent(findParentById(forumPublication.getParent().getId()));
         forumPublication.setSlug(generateUniqueSlug(forumPublication.getTitle()));
         forumPublication.setStatus(findStatusByName());
         forumPublication.setType(findTypeById(forumPublication.getType().getId()));
@@ -52,7 +63,46 @@ public class ForumPublicationService {
         forumPublication.setTopics(findTopics(forumPublication.getTopics()));
         forumPublication.setIsActive(true);
 
-        return repository.save(forumPublication);
+        ForumPublicationBalance forumPublicationDefaultBalance = ForumPublicationBalance.builder()
+                .forumPublication(forumPublication)
+                .virtualCurrency(findVirtualCurrencyBySymbol())
+                .debit(0L)
+                .credit(0L)
+                .build();
+
+        List<ForumPublicationBalance> forumPublicationBalances = new ArrayList<>();
+        forumPublicationBalances.add(forumPublicationDefaultBalance);
+        forumPublication.setBalances(forumPublicationBalances);
+
+        ForumPublication savedForumPublication = repository.save(forumPublication);
+
+        Map<String, String> publicationToParameter = Map.of(
+                "ARTICLE", "create_forum_article",
+                "QUESTION", "create_forum_question",
+                "COMMENT", "create_forum_comment"
+        );
+
+        String parameterName = publicationToParameter.get(forumPublication.getType().getName());
+
+        if (parameterName != null) {
+            TransactionParameter transactionParameter = findTransactionParameterByName(parameterName);
+
+            if (transactionParameter != null) {
+                Transaction transaction = Transaction.builder()
+                        .transactionType(findTransactionTypeByName("EARN"))
+                        .amount(transactionParameter.getReward())
+                        .virtualCurrency(transactionParameter.getVirtualCurrency())
+                        .relatedForumPublication(forumPublication)
+                        .user(forumPublication.getSubmittedBy())
+                        .build();
+
+                transactionService.save(transaction);
+
+                userWalletService.addBalance(transaction.getUser(), transaction.getVirtualCurrency(), transactionParameter.getReward());
+            }
+        }
+
+        return savedForumPublication;
     }
 
     @Transactional
@@ -77,7 +127,23 @@ public class ForumPublicationService {
     }
 
     private Status findStatusByName() {
-        return statusService.findByName("published").orElse(null);
+        return statusService.findByName("PUBLISHED").orElse(null);
+    }
+
+    private VirtualCurrency findVirtualCurrencyBySymbol() {
+        return virtualCurrencyService.findBySymbol("RD").orElse(null);
+    }
+
+    private VirtualCurrency findVirtualCurrencyById(Long id) {
+        return virtualCurrencyService.findById(id).orElse(null);
+    }
+
+    private TransactionType findTransactionTypeByName(String name) {
+        return transactionTypeService.findByName(name).orElse(null);
+    }
+
+    private TransactionParameter findTransactionParameterByName(String name) {
+        return transactionParameterService.findByName(name).orElse(null);
     }
 
     private Type findTypeById(Long id) {

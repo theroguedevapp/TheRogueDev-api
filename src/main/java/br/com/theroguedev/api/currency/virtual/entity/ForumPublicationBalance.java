@@ -43,4 +43,8 @@ public class ForumPublicationBalance {
     @JoinColumn(name = "virtual_currency_id", nullable = false)
     private VirtualCurrency virtualCurrency;
 
+    public void incrementCredit() { this.credit++; }
+
+    public void incrementDebit() { this.debit++; }
+
 }
