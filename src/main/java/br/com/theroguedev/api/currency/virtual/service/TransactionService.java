@@ -5,6 +5,7 @@ import br.com.theroguedev.api.currency.virtual.entity.TransactionType;
 import br.com.theroguedev.api.currency.virtual.entity.VirtualCurrency;
 import br.com.theroguedev.api.currency.virtual.repository.TransactionRepository;
 import br.com.theroguedev.api.publication.entity.ForumPublication;
+import br.com.theroguedev.api.publication.repository.ForumPublicationRepository;
 import br.com.theroguedev.api.publication.service.ForumPublicationService;
 import br.com.theroguedev.api.user.entity.User;
 import br.com.theroguedev.api.user.service.UserService;
@@ -24,7 +25,7 @@ public class TransactionService {
     private final UserService userService;
     private final TransactionTypeService transactionTypeService;
     private final VirtualCurrencyService virtualCurrencyService;
-    private final ForumPublicationService forumPublicationService;
+    private final ForumPublicationRepository forumPublicationRepository;
 
 
     public List<Transaction> findAll() {
@@ -35,8 +36,12 @@ public class TransactionService {
         return repository.findById(id);
     }
 
+    public boolean existsByUserAndRelatedForumPublication(User user, ForumPublication forumPublication) {
+        return repository.existsByUserAndRelatedForumPublication(user, forumPublication);
+    }
+
     @Transactional
-    public Transaction save(Transaction transaction, UUID userId) {
+    public Transaction save(Transaction transaction) {
 
         if (transaction.getRelatedUser() != null) {
             transaction.setRelatedUser(findUserById(transaction.getRelatedUser().getId()));
@@ -46,10 +51,9 @@ public class TransactionService {
             transaction.setRelatedForumPublication(findForumPublicationById(transaction.getRelatedForumPublication().getId()));
         }
 
-        transaction.setUser(findUserById(userId));
+        transaction.setUser(findUserById(transaction.getUser().getId()));
         transaction.setTransactionType(findTransactionTypeById(transaction.getTransactionType().getId()));
         transaction.setVirtualCurrency(findVirtualCurrencyById(transaction.getVirtualCurrency().getId()));
-        transaction.setTransactionType(findTransactionTypeById(transaction.getTransactionType().getId()));
 
         return repository.save(transaction);
     }
@@ -67,7 +71,7 @@ public class TransactionService {
     }
 
     private ForumPublication findForumPublicationById(UUID id) {
-        return forumPublicationService.findById(id).orElse(null);
+        return forumPublicationRepository.findById(id).orElse(null);
     }
 
 }

@@ -1,5 +1,6 @@
 package br.com.theroguedev.api.config;
 
+import br.com.theroguedev.api.exceptions.CustomBadRequestException;
 import br.com.theroguedev.api.exceptions.CustomNotFoundException;
 import br.com.theroguedev.api.exceptions.UnauthorizedException;
 import br.com.theroguedev.api.exceptions.UsernameOrPasswordInvalidException;
@@ -21,6 +22,12 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler(UsernameOrPasswordInvalidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleUsernameOrPasswordInvalidException(UsernameOrPasswordInvalidException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(CustomBadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleCustomBadRequestException(CustomBadRequestException exception) {
         return exception.getMessage();
     }
 

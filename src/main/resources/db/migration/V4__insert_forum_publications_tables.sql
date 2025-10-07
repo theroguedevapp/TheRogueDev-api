@@ -1,12 +1,12 @@
 INSERT INTO publication_types (name, description) VALUES
-('article', 'Artigo inicial em fórum'),
-('question', 'Pergunta inicial em fórum'),
-('comment', 'Comentário em publicação de fórum');
+('ARTICLE', 'Artigo inicial em fórum'),
+('QUESTION', 'Pergunta inicial em fórum'),
+('COMMENT', 'Comentário em publicação de fórum');
 
 INSERT INTO publication_status (name, description) VALUES
-('published', 'Status inicial em fórum'),
-('resolved', 'A publicação já foi validada a solução'),
-('duplicated', 'Já havia uma publicação semelhante');
+('PUBLISHED', 'Status inicial em fórum'),
+('RESOLVED', 'A publicação já foi validada a solução'),
+('DUPLICATED', 'Já havia uma publicação semelhante');
 
 INSERT INTO publication_topics (
    name,

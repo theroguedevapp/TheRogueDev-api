@@ -1,5 +1,7 @@
 package br.com.theroguedev.api.publication.entity;
 
+import br.com.theroguedev.api.currency.virtual.entity.ForumPublicationBalance;
+import br.com.theroguedev.api.currency.virtual.entity.UserWallet;
 import br.com.theroguedev.api.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -91,5 +93,8 @@ public class ForumPublication {
             inverseJoinColumns = @JoinColumn(name = "publication_topic_id")
     )
     private List<Topic> topics;
+
+    @OneToMany(mappedBy = "forumPublication", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ForumPublicationBalance> balances;
 
 }

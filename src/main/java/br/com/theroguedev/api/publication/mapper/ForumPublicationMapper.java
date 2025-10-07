@@ -13,6 +13,7 @@ import br.com.theroguedev.api.user.entity.UserProfile;
 import br.com.theroguedev.api.user.mapper.UserProfileMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,7 @@ import java.util.UUID;
 )
 public interface ForumPublicationMapper {
 
-    @Mapping(target = "parent", source = "parentId")
+    @Mapping(target = "parent", source = "parentId", qualifiedByName = "mapParent")
     @Mapping(target = "type", source = "typeId")
     @Mapping(target = "tools", source = "toolIds")
     @Mapping(target = "topics", source = "topicIds")
@@ -37,6 +38,14 @@ public interface ForumPublicationMapper {
     @Mapping(target = "authors", source = "authors")
     @Mapping(target = "children", source = "children")
     ForumPublicationWithChildrenResponse toResponseWithChildren(ForumPublication entity);
+
+    @Named("mapParent")
+    default ForumPublication mapParent(UUID parentId) {
+        if (parentId == null) return null;
+        ForumPublication parent = new ForumPublication();
+        parent.setId(parentId);
+        return parent;
+    }
 
     default List<ForumPublicationResponse> mapChildren(List<ForumPublication> children) {
         if (children == null) return List.of();

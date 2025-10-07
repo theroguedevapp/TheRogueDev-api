@@ -30,7 +30,7 @@ public class VirtualCurrencyController {
     private final VirtualCurrencyMapper virtualCurrencyMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_all')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('virtual_currency:get_all')")
     public ResponseEntity<List<VirtualCurrencyResponse>> getAll() {
         return ResponseEntity.ok(virtualCurrencyService.findAll()
                 .stream()
@@ -39,7 +39,7 @@ public class VirtualCurrencyController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_by_id')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('virtual_currency:get_by_id')")
     public ResponseEntity<VirtualCurrencyResponse> getById(@PathVariable Long id) {
         return virtualCurrencyService.findById(id)
                 .map(type -> ResponseEntity.ok(virtualCurrencyMapper.toResponse(type)))
@@ -47,7 +47,7 @@ public class VirtualCurrencyController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:create')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('virtual_currency:create')")
     public ResponseEntity<VirtualCurrencyResponse> save(@RequestBody @Valid VirtualCurrencyRequest request) {
         VirtualCurrency newVirtualCurrency = virtualCurrencyMapper.toVirtualCurrency(request);
         VirtualCurrency savedVirtualCurrency = virtualCurrencyService.save(newVirtualCurrency);

@@ -24,7 +24,7 @@ public class TransactionTypeController {
     private final TransactionTypeMapper transactionTypeMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_all')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_type:get_all')")
     public ResponseEntity<List<TransactionTypeResponse>> getAll() {
         return ResponseEntity.ok(transactionTypeService.findAll()
                 .stream()
@@ -33,7 +33,7 @@ public class TransactionTypeController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:get_by_id')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_type:get_by_id')")
     public ResponseEntity<TransactionTypeResponse> getById(@PathVariable Long id) {
         return transactionTypeService.findById(id)
                 .map(type -> ResponseEntity.ok(transactionTypeMapper.toResponse(type)))
@@ -41,7 +41,7 @@ public class TransactionTypeController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_type:create')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_type:create')")
     public ResponseEntity<TransactionTypeResponse> save(@RequestBody @Valid TransactionTypeRequest request) {
         TransactionType newTransactionType = transactionTypeMapper.toTransactionType(request);
         TransactionType savedTransactionType = transactionTypeService.save(newTransactionType);

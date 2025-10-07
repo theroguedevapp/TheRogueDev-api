@@ -25,6 +25,10 @@ public class VirtualCurrencyService {
         return repository.findById(id);
     }
 
+    public Optional<VirtualCurrency> findBySymbol(String symbol) {
+        return repository.findBySymbol(symbol);
+    }
+
     public VirtualCurrency save(VirtualCurrency virtualCurrency) {
         if (virtualCurrency.getExchangeRate() == null) {
             virtualCurrency.setExchangeRate(new BigDecimal("1"));
