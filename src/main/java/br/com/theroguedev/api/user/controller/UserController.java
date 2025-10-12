@@ -1,15 +1,11 @@
 package br.com.theroguedev.api.user.controller;
 
 
-import br.com.theroguedev.api.user.dto.request.SystemRoleRequest;
+import br.com.theroguedev.api.user.controller.doc.UserControllerDoc;
 import br.com.theroguedev.api.user.dto.request.UserRequest;
-import br.com.theroguedev.api.user.dto.response.SystemRoleResponse;
 import br.com.theroguedev.api.user.dto.response.UserResponse;
-import br.com.theroguedev.api.user.entity.SystemRole;
 import br.com.theroguedev.api.user.entity.User;
-import br.com.theroguedev.api.user.mapper.SystemRoleMapper;
 import br.com.theroguedev.api.user.mapper.UserMapper;
-import br.com.theroguedev.api.user.service.SystemRoleService;
 import br.com.theroguedev.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserControllerDoc {
 
     private final UserService userService;
     private final UserMapper userMapper;

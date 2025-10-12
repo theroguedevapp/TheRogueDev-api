@@ -2,6 +2,7 @@ package br.com.theroguedev.api.currency.virtual.controller;
 
 
 import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.currency.virtual.controller.doc.TransactionControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.TransactionRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.TransactionResponse;
 import br.com.theroguedev.api.currency.virtual.entity.Transaction;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/currency/virtual/transaction")
 @RequiredArgsConstructor
-public class TransactionController {
+public class TransactionController implements TransactionControllerDoc {
 
     private final TransactionService transactionService;
     private final TransactionMapper transactionMapper;

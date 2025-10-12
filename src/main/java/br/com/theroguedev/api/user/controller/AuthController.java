@@ -2,6 +2,7 @@ package br.com.theroguedev.api.user.controller;
 
 import br.com.theroguedev.api.config.TokenService;
 import br.com.theroguedev.api.exceptions.UsernameOrPasswordInvalidException;
+import br.com.theroguedev.api.user.controller.doc.AuthControllerDoc;
 import br.com.theroguedev.api.user.dto.request.LoginRequest;
 import br.com.theroguedev.api.user.dto.request.UserRequest;
 import br.com.theroguedev.api.user.dto.response.AuthenticatedUserResponse;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth/")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerDoc {
 
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;

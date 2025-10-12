@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
+import br.com.theroguedev.api.currency.virtual.controller.doc.VirtualCurrencyControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.TransactionTypeRequest;
 import br.com.theroguedev.api.currency.virtual.dto.request.VirtualCurrencyRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.TransactionTypeResponse;
@@ -24,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/currency/virtual")
 @RequiredArgsConstructor
-public class VirtualCurrencyController {
+public class VirtualCurrencyController implements VirtualCurrencyControllerDoc {
 
     private final VirtualCurrencyService virtualCurrencyService;
     private final VirtualCurrencyMapper virtualCurrencyMapper;

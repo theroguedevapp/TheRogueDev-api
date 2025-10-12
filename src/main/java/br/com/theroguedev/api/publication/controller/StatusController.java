@@ -1,5 +1,6 @@
 package br.com.theroguedev.api.publication.controller;
 
+import br.com.theroguedev.api.publication.controller.doc.StatusControllerDoc;
 import br.com.theroguedev.api.publication.dto.request.StatusRequest;
 import br.com.theroguedev.api.publication.dto.response.StatusResponse;
 import br.com.theroguedev.api.publication.entity.Status;
@@ -17,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/publication/status")
 @RequiredArgsConstructor
-public class StatusController {
+public class StatusController implements StatusControllerDoc {
 
     private final StatusService statusService;
     private final StatusMapper statusMapper;

@@ -2,6 +2,7 @@ package br.com.theroguedev.api.user.controller;
 
 
 import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.user.controller.doc.UserProfileControllerDoc;
 import br.com.theroguedev.api.user.dto.request.UserProfileRequest;
 import br.com.theroguedev.api.user.dto.request.UserRequest;
 import br.com.theroguedev.api.user.dto.response.UserProfileResponse;
@@ -26,7 +27,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/user/profile")
 @RequiredArgsConstructor
-public class UserProfileController {
+public class UserProfileController implements UserProfileControllerDoc {
 
     private final UserProfileService userProfileService;
     private final UserProfileMapper userProfileMapper;

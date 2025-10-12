@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
+import br.com.theroguedev.api.currency.virtual.controller.doc.UserWalletControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.UserWalletRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.UserWalletResponse;
 import br.com.theroguedev.api.currency.virtual.entity.UserWallet;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/currency/virtual/user/wallet")
 @RequiredArgsConstructor
-public class UserWalletController {
+public class UserWalletController implements UserWalletControllerDoc {
 
     private final UserWalletService userWalletService;
     private final UserWalletMapper userWalletMapper;
