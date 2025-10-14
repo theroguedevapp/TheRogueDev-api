@@ -31,3 +31,6 @@ the-rougue-dev:
   security:
     secret: ${SECRET}
     cookie-secure: false
+
+imgBB:
+  upload-url: ${IMGBB_UPLOAD_URL}
