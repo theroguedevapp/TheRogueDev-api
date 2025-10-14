@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.user.controller;
 
 
+import br.com.theroguedev.api.user.controller.doc.PermissionControllerDoc;
 import br.com.theroguedev.api.user.dto.request.PermissionRequest;
 import br.com.theroguedev.api.user.dto.response.PermissionResponse;
 import br.com.theroguedev.api.user.entity.Permission;
@@ -17,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/user/permission")
 @RequiredArgsConstructor
-public class PermissionController {
+public class PermissionController implements PermissionControllerDoc {
 
     private final PermissionService permissionService;
     private final PermissionMapper permissionMapper;

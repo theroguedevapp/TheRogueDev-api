@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.user.controller;
 
 
+import br.com.theroguedev.api.user.controller.doc.SystemRoleControllerDoc;
 import br.com.theroguedev.api.user.dto.request.ChangePermissionsRequest;
 import br.com.theroguedev.api.user.dto.request.SystemRoleRequest;
 import br.com.theroguedev.api.user.dto.response.SystemRoleResponse;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/user/system-role")
 @RequiredArgsConstructor
-public class SystemRoleController {
+public class SystemRoleController implements SystemRoleControllerDoc {
 
     private final SystemRoleService systemRoleService;
     private final SystemRoleMapper systemRoleMapper;

@@ -2,6 +2,7 @@ package br.com.theroguedev.api.currency.virtual.controller;
 
 
 import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.currency.virtual.controller.doc.ForumPublicationBalanceControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.ForumPublicationBalanceRequest;
 import br.com.theroguedev.api.currency.virtual.dto.request.ForumPublicationBalanceVoteRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.ForumPublicationBalanceResponse;
@@ -24,7 +25,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/currency/virtual/forum/publication/balance")
 @RequiredArgsConstructor
-public class ForumPublicationBalanceController {
+public class ForumPublicationBalanceController implements ForumPublicationBalanceControllerDoc {
 
     private final ForumPublicationBalanceService forumPublicationBalanceService;
     private final ForumPublicationBalanceMapper forumPublicationBalanceMapper;

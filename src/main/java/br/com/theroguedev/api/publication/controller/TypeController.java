@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.publication.controller;
 
 
+import br.com.theroguedev.api.publication.controller.doc.TypeControllerDoc;
 import br.com.theroguedev.api.publication.dto.request.TopicRequest;
 import br.com.theroguedev.api.publication.dto.request.TypeRequest;
 import br.com.theroguedev.api.publication.dto.response.TopicResponse;
@@ -23,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/publication/type")
 @RequiredArgsConstructor
-public class TypeController {
+public class TypeController implements TypeControllerDoc {
 
     private final TypeService typeService;
     private final TypeMapper typeMapper;

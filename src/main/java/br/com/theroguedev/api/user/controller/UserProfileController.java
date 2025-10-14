@@ -2,6 +2,7 @@ package br.com.theroguedev.api.user.controller;
 
 
 import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.user.controller.doc.UserProfileControllerDoc;
 import br.com.theroguedev.api.user.dto.request.UserProfileRequest;
 import br.com.theroguedev.api.user.dto.request.UserRequest;
 import br.com.theroguedev.api.user.dto.response.UserProfileResponse;
@@ -10,6 +11,7 @@ import br.com.theroguedev.api.user.entity.User;
 import br.com.theroguedev.api.user.entity.UserProfile;
 import br.com.theroguedev.api.user.mapper.UserMapper;
 import br.com.theroguedev.api.user.mapper.UserProfileMapper;
+import br.com.theroguedev.api.user.service.AuthService;
 import br.com.theroguedev.api.user.service.UserProfileService;
 import br.com.theroguedev.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,10 +29,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/user/profile")
 @RequiredArgsConstructor
-public class UserProfileController {
+public class UserProfileController implements UserProfileControllerDoc {
 
     private final UserProfileService userProfileService;
     private final UserProfileMapper userProfileMapper;
+    private final AuthService authService;
 
 
     @GetMapping
@@ -61,6 +65,26 @@ public class UserProfileController {
         return userProfileService.findById(userData.id())
                 .map(userProfile -> ResponseEntity.ok(userProfileMapper.toResponse(userProfile)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/pic/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:change-profile-pic')")
+    public ResponseEntity<UserProfileResponse> changeProfilePic(@PathVariable String username, @RequestParam("file")MultipartFile file) {
+
+        JWTUserData userData = authService.validateUserAccess(username);
+        UserProfile userProfile = userProfileService.changeProfilePic(file, userData.id());
+
+        return ResponseEntity.ok(userProfileMapper.toResponse(userProfile));
+    }
+
+    @PatchMapping("/banner/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:change-profile-banner')")
+    public ResponseEntity<UserProfileResponse> changeProfileBanner(@PathVariable String username, @RequestParam("file")MultipartFile file) {
+
+        JWTUserData userData = authService.validateUserAccess(username);
+        UserProfile userProfile = userProfileService.changeProfileBanner(file, userData.id());
+
+        return ResponseEntity.ok(userProfileMapper.toResponse(userProfile));
     }
 
 }

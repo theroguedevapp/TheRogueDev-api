@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
+import br.com.theroguedev.api.currency.virtual.controller.doc.TransactionParameterControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.TransactionParameterRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.TransactionParameterResponse;
 import br.com.theroguedev.api.currency.virtual.entity.TransactionParameter;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/currency/virtual/transaction/parameter")
 @RequiredArgsConstructor
-public class TransactionParameterController {
+public class TransactionParameterController implements TransactionParameterControllerDoc {
 
     private final TransactionParameterService transactionParameterService;
     private final TransactionParameterMapper transactionParameterMapper;

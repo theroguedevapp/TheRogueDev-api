@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.publication.controller;
 
 import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.publication.controller.doc.ForumPublicationControllerDoc;
 import br.com.theroguedev.api.publication.dto.request.ForumPublicationRequest;
 import br.com.theroguedev.api.publication.dto.response.ForumPublicationResponse;
 import br.com.theroguedev.api.publication.dto.response.ForumPublicationWithChildrenResponse;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/forum/publication")
 @RequiredArgsConstructor
-public class ForumPublicationController {
+public class ForumPublicationController implements ForumPublicationControllerDoc {
 
     private final ForumPublicationService forumPublicationService;
     private final ForumPublicationMapper forumPublicationMapper;

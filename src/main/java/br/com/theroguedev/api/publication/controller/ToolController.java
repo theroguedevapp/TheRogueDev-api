@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.publication.controller;
 
 
+import br.com.theroguedev.api.publication.controller.doc.ToolControllerDoc;
 import br.com.theroguedev.api.publication.dto.request.StatusRequest;
 import br.com.theroguedev.api.publication.dto.request.ToolRequest;
 import br.com.theroguedev.api.publication.dto.response.StatusResponse;
@@ -23,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/publication/tool")
 @RequiredArgsConstructor
-public class ToolController {
+public class ToolController implements ToolControllerDoc {
 
     private final ToolService toolService;
     private final ToolMapper toolMapper;

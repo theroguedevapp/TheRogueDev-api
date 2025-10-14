@@ -12,7 +12,25 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+springdoc:
+  api-docs:
+    path: /api/api-docs
+  swagger-ui:
+    path: /swagger/index.html
+    with-credentials: true
+    doc-expansion: none
+    default-model-expand-depth: 0
+    display-request-duration: false
+    filter: true
+    persist-authorization: false
+    layout: StandaloneLayout
+    show-extensions: false
+    operations-sorter: method
+
 the-rougue-dev:
   security:
     secret: ${SECRET}
     cookie-secure: false
+
+imgBB:
+  upload-url: ${IMGBB_UPLOAD_URL}

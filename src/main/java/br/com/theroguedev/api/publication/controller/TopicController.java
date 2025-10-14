@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.publication.controller;
 
 
+import br.com.theroguedev.api.publication.controller.doc.TopicControllerDoc;
 import br.com.theroguedev.api.publication.dto.request.ToolRequest;
 import br.com.theroguedev.api.publication.dto.request.TopicRequest;
 import br.com.theroguedev.api.publication.dto.response.ToolResponse;
@@ -23,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/publication/topic")
 @RequiredArgsConstructor
-public class TopicController {
+public class TopicController implements TopicControllerDoc {
 
     private final TopicService topicService;
     private final TopicMapper topicMapper;
