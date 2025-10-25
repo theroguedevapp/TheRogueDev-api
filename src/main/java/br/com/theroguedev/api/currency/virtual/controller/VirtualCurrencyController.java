@@ -1,23 +1,18 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
-import br.com.theroguedev.api.currency.virtual.controller.doc.VirtualCurrencyControllerDoc;
-import br.com.theroguedev.api.currency.virtual.dto.request.TransactionTypeRequest;
+import br.com.theroguedev.api.config.security.annotation.create.CanCreateVirtualCurrency;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadVirtualCurrency;
+import br.com.theroguedev.api.currency.virtual.controller.doc.CurrencyVirtualControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.VirtualCurrencyRequest;
-import br.com.theroguedev.api.currency.virtual.dto.response.TransactionTypeResponse;
 import br.com.theroguedev.api.currency.virtual.dto.response.VirtualCurrencyResponse;
-import br.com.theroguedev.api.currency.virtual.entity.TransactionType;
 import br.com.theroguedev.api.currency.virtual.entity.VirtualCurrency;
-import br.com.theroguedev.api.currency.virtual.mapper.TransactionTypeMapper;
 import br.com.theroguedev.api.currency.virtual.mapper.VirtualCurrencyMapper;
-import br.com.theroguedev.api.currency.virtual.repository.VirtualCurrencyRepository;
-import br.com.theroguedev.api.currency.virtual.service.TransactionTypeService;
 import br.com.theroguedev.api.currency.virtual.service.VirtualCurrencyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,13 +20,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/currency/virtual")
 @RequiredArgsConstructor
-public class VirtualCurrencyController implements VirtualCurrencyControllerDoc {
+public class VirtualCurrencyController implements CurrencyVirtualControllerDoc {
 
     private final VirtualCurrencyService virtualCurrencyService;
     private final VirtualCurrencyMapper virtualCurrencyMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('virtual_currency:get_all')")
+    @CanReadVirtualCurrency
     public ResponseEntity<List<VirtualCurrencyResponse>> getAll() {
         return ResponseEntity.ok(virtualCurrencyService.findAll()
                 .stream()
@@ -40,7 +35,7 @@ public class VirtualCurrencyController implements VirtualCurrencyControllerDoc {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('virtual_currency:get_by_id')")
+    @CanReadVirtualCurrency
     public ResponseEntity<VirtualCurrencyResponse> getById(@PathVariable Long id) {
         return virtualCurrencyService.findById(id)
                 .map(type -> ResponseEntity.ok(virtualCurrencyMapper.toResponse(type)))
@@ -48,7 +43,7 @@ public class VirtualCurrencyController implements VirtualCurrencyControllerDoc {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('virtual_currency:create')")
+    @CanCreateVirtualCurrency
     public ResponseEntity<VirtualCurrencyResponse> save(@RequestBody @Valid VirtualCurrencyRequest request) {
         VirtualCurrency newVirtualCurrency = virtualCurrencyMapper.toVirtualCurrency(request);
         VirtualCurrency savedVirtualCurrency = virtualCurrencyService.save(newVirtualCurrency);

@@ -1,17 +1,20 @@
 package br.com.theroguedev.api.user.controller;
 
-
+import br.com.theroguedev.api.config.security.annotation.read.CanReadUser;
 import br.com.theroguedev.api.user.controller.doc.UserControllerDoc;
-import br.com.theroguedev.api.user.dto.request.UserRequest;
+import br.com.theroguedev.api.user.dto.response.AuthenticatedUserResponse;
 import br.com.theroguedev.api.user.dto.response.UserResponse;
-import br.com.theroguedev.api.user.entity.User;
 import br.com.theroguedev.api.user.mapper.UserMapper;
 import br.com.theroguedev.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,9 +27,8 @@ public class UserController implements UserControllerDoc {
     private final UserService userService;
     private final UserMapper userMapper;
 
-
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user:get_all')")
+    @CanReadUser
     public ResponseEntity<List<UserResponse>> getAll() {
         return ResponseEntity.ok(userService.findAll()
                 .stream()
@@ -35,7 +37,7 @@ public class UserController implements UserControllerDoc {
     }
 
     @GetMapping("/id/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user:get_by_id')")
+    @CanReadUser
     public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
         return userService.findById(id)
                 .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
@@ -43,19 +45,23 @@ public class UserController implements UserControllerDoc {
     }
 
     @GetMapping("/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user:get_by_username')")
+    @CanReadUser
     public ResponseEntity<UserResponse> getByUsername(@PathVariable String username) {
         return userService.findByUsername(username)
                 .map(user -> ResponseEntity.ok(userMapper.toResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user:create')")
-    public ResponseEntity<UserResponse> save(@RequestBody UserRequest request) {
-        User newUser = userMapper.toUser(request);
-        User savedUser = userService.save(newUser, request.name());
-        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toResponse(savedUser));
+    @GetMapping("/me")
+    public ResponseEntity<AuthenticatedUserResponse> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
+
+        if (jwt == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return userService.findById(UUID.fromString(jwt.getClaimAsString("id")))
+                .map(user -> ResponseEntity.ok(userMapper.toAuthenticatedUserResponse(user)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }

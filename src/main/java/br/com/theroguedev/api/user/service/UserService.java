@@ -2,8 +2,8 @@ package br.com.theroguedev.api.user.service;
 
 import br.com.theroguedev.api.currency.virtual.entity.UserWallet;
 import br.com.theroguedev.api.currency.virtual.entity.VirtualCurrency;
-import br.com.theroguedev.api.currency.virtual.service.UserWalletService;
 import br.com.theroguedev.api.currency.virtual.service.VirtualCurrencyService;
+import br.com.theroguedev.api.exceptions.UniqueAlreadyExistsException;
 import br.com.theroguedev.api.user.entity.SystemRole;
 import br.com.theroguedev.api.user.entity.User;
 import br.com.theroguedev.api.user.entity.UserProfile;
@@ -36,11 +36,16 @@ public class UserService {
     }
 
     public Optional<User> findByUsername(String username) {
-        return  repository.findByUsername(username);
+        return repository.findByUsername(username);
     }
 
     @Transactional
     public User save(User user, String userProfileName) {
+
+        if (repository.existsByEmail(user.getEmail())) {
+            throw new UniqueAlreadyExistsException("Email já está em uso.");
+        }
+
         user.setIsActive(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setSystemRole(findSystemRoleByName());
@@ -53,7 +58,7 @@ public class UserService {
         user.setUserProfile(profile);
 
         List<UserWallet> userWallets = new ArrayList<>();
-        userWallets.add( UserWallet.builder()
+        userWallets.add(UserWallet.builder()
                 .user(user)
                 .balance(0L)
                 .virtualCurrency(findVirtualCurrencyBySymbol())

@@ -11,6 +11,25 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: Google
+          provider:
+            google:
+              authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+              token-uri: https://oauth2.googleapis.com/token
+              user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+              user-name-attribute: email
 
 springdoc:
   api-docs:
@@ -27,10 +46,13 @@ springdoc:
     show-extensions: false
     operations-sorter: method
 
-the-rougue-dev:
-  security:
-    secret: ${SECRET}
-    cookie-secure: false
-
 imgBB:
   upload-url: ${IMGBB_UPLOAD_URL}
+
+jwt:
+  public:
+    key: classpath:authz.pub
+  private:
+    key: classpath:authz.pem
+  cookie-secure: false
+  expires-in: 600

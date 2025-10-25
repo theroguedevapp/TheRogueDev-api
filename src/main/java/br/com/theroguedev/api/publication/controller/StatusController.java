@@ -1,5 +1,8 @@
 package br.com.theroguedev.api.publication.controller;
 
+import br.com.theroguedev.api.config.security.annotation.create.CanCreatePublicationStatus;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadPublicationStatus;
+import br.com.theroguedev.api.config.security.annotation.update.CanUpdatePublicationStatus;
 import br.com.theroguedev.api.publication.controller.doc.StatusControllerDoc;
 import br.com.theroguedev.api.publication.dto.request.StatusRequest;
 import br.com.theroguedev.api.publication.dto.response.StatusResponse;
@@ -10,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +26,7 @@ public class StatusController implements StatusControllerDoc {
     private final StatusMapper statusMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_status:get_all')")
+    @CanReadPublicationStatus
     public ResponseEntity<List<StatusResponse>> getAll() {
         return ResponseEntity.ok(statusService.findAll()
                 .stream()
@@ -33,7 +35,7 @@ public class StatusController implements StatusControllerDoc {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_status:get_by_id')")
+    @CanReadPublicationStatus
     public ResponseEntity<StatusResponse> getById(@PathVariable Long id) {
         return statusService.findById(id)
                 .map(status -> ResponseEntity.ok(statusMapper.toResponse(status)))
@@ -41,7 +43,7 @@ public class StatusController implements StatusControllerDoc {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_status:create')")
+    @CanCreatePublicationStatus
     public ResponseEntity<StatusResponse> save(@RequestBody @Valid StatusRequest request) {
         Status newStatus = statusMapper.toStatus(request);
         Status savedStatus = statusService.save(newStatus);
@@ -49,7 +51,7 @@ public class StatusController implements StatusControllerDoc {
     }
 
     @PatchMapping("activate/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_status:activate')")
+    @CanUpdatePublicationStatus
     public ResponseEntity<StatusResponse> activate(@PathVariable Long id) {
         Status status = statusService.changeStatus(id, true);
 
@@ -57,7 +59,7 @@ public class StatusController implements StatusControllerDoc {
     }
 
     @PatchMapping("deactivate/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_status:deactivate')")
+    @CanUpdatePublicationStatus
     public ResponseEntity<StatusResponse> deactivate(@PathVariable Long id) {
 
         Status status = statusService.changeStatus(id, false);

@@ -1,4 +1,4 @@
-package br.com.theroguedev.api.config;
+package br.com.theroguedev.api.config.security;
 
 import lombok.Builder;
 

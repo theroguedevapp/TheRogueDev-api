@@ -1,6 +1,9 @@
 package br.com.theroguedev.api.publication.controller;
 
-import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.config.security.JWTUserData;
+import br.com.theroguedev.api.config.security.annotation.create.CanCreateForumPublication;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadForumPublication;
+import br.com.theroguedev.api.config.security.annotation.update.CanUpdateForumPublication;
 import br.com.theroguedev.api.publication.controller.doc.ForumPublicationControllerDoc;
 import br.com.theroguedev.api.publication.dto.request.ForumPublicationRequest;
 import br.com.theroguedev.api.publication.dto.response.ForumPublicationResponse;
@@ -12,7 +15,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +31,7 @@ public class ForumPublicationController implements ForumPublicationControllerDoc
     private final ForumPublicationMapper forumPublicationMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication:get_all')")
+    @CanReadForumPublication
     public ResponseEntity<List<ForumPublicationResponse>> getAll() {
         return ResponseEntity.ok(forumPublicationService.findAll()
                 .stream()
@@ -38,7 +40,7 @@ public class ForumPublicationController implements ForumPublicationControllerDoc
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication:get_by_id')")
+    @CanReadForumPublication
     public ResponseEntity<ForumPublicationResponse> getById(@PathVariable UUID id) {
         return forumPublicationService.findById(id)
                 .map(forumPublication -> ResponseEntity.ok(forumPublicationMapper.toResponse(forumPublication)))
@@ -46,7 +48,7 @@ public class ForumPublicationController implements ForumPublicationControllerDoc
     }
 
     @GetMapping("/children/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication:get_by_id')")
+    @CanReadForumPublication
     public ResponseEntity<ForumPublicationWithChildrenResponse> getByIdWithChildren(@PathVariable UUID id) {
         return forumPublicationService.findByIdWithChildren(id)
                 .map(forumPublication -> ResponseEntity.ok(forumPublicationMapper.toResponseWithChildren(forumPublication)))
@@ -54,7 +56,7 @@ public class ForumPublicationController implements ForumPublicationControllerDoc
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication:create')")
+    @CanCreateForumPublication
     public ResponseEntity<ForumPublicationResponse> save(@RequestBody @Valid ForumPublicationRequest request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -67,7 +69,7 @@ public class ForumPublicationController implements ForumPublicationControllerDoc
     }
 
     @PatchMapping("activate/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication:activate')")
+    @CanUpdateForumPublication
     public ResponseEntity<ForumPublicationResponse> activate(@PathVariable UUID id) {
         ForumPublication forumPublication = forumPublicationService.changeStatus(id, true);
 
@@ -75,7 +77,7 @@ public class ForumPublicationController implements ForumPublicationControllerDoc
     }
 
     @PatchMapping("deactivate/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication:deactivate')")
+    @CanUpdateForumPublication
     public ResponseEntity<ForumPublicationResponse> deactivate(@PathVariable UUID id) {
         ForumPublication forumPublication = forumPublicationService.changeStatus(id, false);
 

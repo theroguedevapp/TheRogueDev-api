@@ -1,12 +1,11 @@
 package br.com.theroguedev.api.currency.virtual.service;
 
+import br.com.theroguedev.api.currency.virtual.entity.VirtualCurrency;
 import br.com.theroguedev.api.currency.virtual.entity.Transaction;
 import br.com.theroguedev.api.currency.virtual.entity.TransactionType;
-import br.com.theroguedev.api.currency.virtual.entity.VirtualCurrency;
 import br.com.theroguedev.api.currency.virtual.repository.TransactionRepository;
 import br.com.theroguedev.api.publication.entity.ForumPublication;
 import br.com.theroguedev.api.publication.repository.ForumPublicationRepository;
-import br.com.theroguedev.api.publication.service.ForumPublicationService;
 import br.com.theroguedev.api.user.entity.User;
 import br.com.theroguedev.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;

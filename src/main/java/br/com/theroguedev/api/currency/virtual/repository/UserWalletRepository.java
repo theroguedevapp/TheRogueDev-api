@@ -1,6 +1,5 @@
 package br.com.theroguedev.api.currency.virtual.repository;
 
-import br.com.theroguedev.api.currency.virtual.entity.Transaction;
 import br.com.theroguedev.api.currency.virtual.entity.UserWallet;
 import br.com.theroguedev.api.currency.virtual.entity.VirtualCurrency;
 import br.com.theroguedev.api.user.entity.User;

@@ -1,22 +1,19 @@
 package br.com.theroguedev.api.publication.controller;
 
 
+import br.com.theroguedev.api.config.security.annotation.create.CanCreatePublicationTool;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadPublicationTool;
+import br.com.theroguedev.api.config.security.annotation.update.CanUpdatePublicationTool;
 import br.com.theroguedev.api.publication.controller.doc.ToolControllerDoc;
-import br.com.theroguedev.api.publication.dto.request.StatusRequest;
 import br.com.theroguedev.api.publication.dto.request.ToolRequest;
-import br.com.theroguedev.api.publication.dto.response.StatusResponse;
 import br.com.theroguedev.api.publication.dto.response.ToolResponse;
-import br.com.theroguedev.api.publication.entity.Status;
 import br.com.theroguedev.api.publication.entity.Tool;
-import br.com.theroguedev.api.publication.mapper.StatusMapper;
 import br.com.theroguedev.api.publication.mapper.ToolMapper;
-import br.com.theroguedev.api.publication.service.StatusService;
 import br.com.theroguedev.api.publication.service.ToolService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +27,7 @@ public class ToolController implements ToolControllerDoc {
     private final ToolMapper toolMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_tool:get_all')")
+    @CanReadPublicationTool
     public ResponseEntity<List<ToolResponse>> getAll() {
         return ResponseEntity.ok(toolService.findAll()
                 .stream()
@@ -39,7 +36,7 @@ public class ToolController implements ToolControllerDoc {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_tool:get_by_id')")
+    @CanReadPublicationTool
     public ResponseEntity<ToolResponse> getById(@PathVariable Long id) {
         return toolService.findById(id)
                 .map(tool -> ResponseEntity.ok(toolMapper.toResponse(tool)))
@@ -47,7 +44,7 @@ public class ToolController implements ToolControllerDoc {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_tool:create')")
+    @CanCreatePublicationTool
     public ResponseEntity<ToolResponse> save(@RequestBody @Valid ToolRequest request) {
         Tool newTool = toolMapper.toTool(request);
         Tool savedTool = toolService.save(newTool);
@@ -55,7 +52,7 @@ public class ToolController implements ToolControllerDoc {
     }
 
     @PatchMapping("activate/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_tool:activate')")
+    @CanUpdatePublicationTool
     public ResponseEntity<ToolResponse> activate(@PathVariable Long id) {
         Tool tool = toolService.changeStatus(id, true);
 
@@ -63,7 +60,7 @@ public class ToolController implements ToolControllerDoc {
     }
 
     @PatchMapping("deactivate/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_tool:deactivate')")
+    @CanUpdatePublicationTool
     public ResponseEntity<ToolResponse> deactivate(@PathVariable Long id) {
         Tool tool = toolService.changeStatus(id, false);
 

@@ -1,7 +1,9 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
-import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.config.security.JWTUserData;
+import br.com.theroguedev.api.config.security.annotation.create.CanCreateCurrencyVirtualTransaction;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadCurrencyVirtualTransaction;
 import br.com.theroguedev.api.currency.virtual.controller.doc.TransactionControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.TransactionRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.TransactionResponse;
@@ -13,7 +15,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class TransactionController implements TransactionControllerDoc {
     private final TransactionMapper transactionMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction:get_all')")
+    @CanReadCurrencyVirtualTransaction
     public ResponseEntity<List<TransactionResponse>> getAll() {
         return ResponseEntity.ok(transactionService.findAll()
                 .stream()
@@ -39,7 +40,7 @@ public class TransactionController implements TransactionControllerDoc {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction:get_by_id')")
+    @CanReadCurrencyVirtualTransaction
     public ResponseEntity<TransactionResponse> getById(@PathVariable UUID id) {
         return transactionService.findById(id)
                 .map(type -> ResponseEntity.ok(transactionMapper.toResponse(type)))
@@ -47,7 +48,7 @@ public class TransactionController implements TransactionControllerDoc {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction:create')")
+    @CanCreateCurrencyVirtualTransaction
     public ResponseEntity<TransactionResponse> save(@RequestBody @Valid TransactionRequest request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

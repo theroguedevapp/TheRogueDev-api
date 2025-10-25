@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Tag(name = "Currency Virtual VirtualCurrency", description = "Virtual currency management operations")
-public interface VirtualCurrencyControllerDoc {
+public interface CurrencyVirtualControllerDoc {
 
     @Operation(
             summary = "Get all virtual currencies",

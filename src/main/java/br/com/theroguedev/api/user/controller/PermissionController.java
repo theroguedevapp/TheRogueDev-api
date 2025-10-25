@@ -1,17 +1,17 @@
 package br.com.theroguedev.api.user.controller;
 
 
+import br.com.theroguedev.api.config.security.annotation.read.CanReadPermission;
 import br.com.theroguedev.api.user.controller.doc.PermissionControllerDoc;
-import br.com.theroguedev.api.user.dto.request.PermissionRequest;
 import br.com.theroguedev.api.user.dto.response.PermissionResponse;
-import br.com.theroguedev.api.user.entity.Permission;
 import br.com.theroguedev.api.user.mapper.PermissionMapper;
 import br.com.theroguedev.api.user.service.PermissionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class PermissionController implements PermissionControllerDoc {
     private final PermissionMapper permissionMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('permission:get_all')")
+    @CanReadPermission
     public ResponseEntity<List<PermissionResponse>> getAll() {
         return ResponseEntity.ok(permissionService.findAll()
                 .stream()
@@ -33,19 +33,10 @@ public class PermissionController implements PermissionControllerDoc {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('permission:get_by_id')")
+    @CanReadPermission
     public ResponseEntity<PermissionResponse> getById(@PathVariable Long id) {
         return permissionService.findById(id)
                 .map(permission -> ResponseEntity.ok(permissionMapper.toResponse(permission)))
                 .orElse(ResponseEntity.notFound().build());
     }
-
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('permission:create')")
-    public ResponseEntity<PermissionResponse> save(@RequestBody PermissionRequest request) {
-        Permission newPermission = permissionMapper.toPermission(request);
-        Permission savedPermission = permissionService.save(newPermission);
-        return ResponseEntity.status(HttpStatus.CREATED).body(permissionMapper.toResponse(savedPermission));
-    }
-
 }

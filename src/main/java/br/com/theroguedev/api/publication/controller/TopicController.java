@@ -1,22 +1,19 @@
 package br.com.theroguedev.api.publication.controller;
 
 
+import br.com.theroguedev.api.config.security.annotation.create.CanCreatePublicationTopic;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadPublicationTopic;
+import br.com.theroguedev.api.config.security.annotation.update.CanUpdatePublicationTopic;
 import br.com.theroguedev.api.publication.controller.doc.TopicControllerDoc;
-import br.com.theroguedev.api.publication.dto.request.ToolRequest;
 import br.com.theroguedev.api.publication.dto.request.TopicRequest;
-import br.com.theroguedev.api.publication.dto.response.ToolResponse;
 import br.com.theroguedev.api.publication.dto.response.TopicResponse;
-import br.com.theroguedev.api.publication.entity.Tool;
 import br.com.theroguedev.api.publication.entity.Topic;
-import br.com.theroguedev.api.publication.mapper.ToolMapper;
 import br.com.theroguedev.api.publication.mapper.TopicMapper;
-import br.com.theroguedev.api.publication.service.ToolService;
 import br.com.theroguedev.api.publication.service.TopicService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +27,7 @@ public class TopicController implements TopicControllerDoc {
     private final TopicMapper topicMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_topic:get_all')")
+    @CanReadPublicationTopic
     public ResponseEntity<List<TopicResponse>> getAll() {
         return ResponseEntity.ok(topicService.findAll()
                 .stream()
@@ -39,7 +36,7 @@ public class TopicController implements TopicControllerDoc {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_topic:get_by_id')")
+    @CanReadPublicationTopic
     public ResponseEntity<TopicResponse> getById(@PathVariable Long id) {
         return topicService.findById(id)
                 .map(topic -> ResponseEntity.ok(topicMapper.toResponse(topic)))
@@ -47,7 +44,7 @@ public class TopicController implements TopicControllerDoc {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_topic:create')")
+    @CanCreatePublicationTopic
     public ResponseEntity<TopicResponse> save(@RequestBody @Valid TopicRequest request) {
         Topic newTopic = topicMapper.toTopic(request);
         Topic savedTopic = topicService.save(newTopic);
@@ -55,7 +52,7 @@ public class TopicController implements TopicControllerDoc {
     }
 
     @PatchMapping("activate/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_topic:activate')")
+    @CanUpdatePublicationTopic
     public ResponseEntity<TopicResponse> activate(@PathVariable Long id) {
         Topic topic = topicService.changeStatus(id, true);
 
@@ -63,7 +60,7 @@ public class TopicController implements TopicControllerDoc {
     }
 
     @PatchMapping("deactivate/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('publication_topic:deactivate')")
+    @CanUpdatePublicationTopic
     public ResponseEntity<TopicResponse> deactivate(@PathVariable Long id) {
         Topic topic = topicService.changeStatus(id, false);
 

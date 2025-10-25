@@ -1,6 +1,8 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
+import br.com.theroguedev.api.config.security.annotation.create.CanCreateCurrencyVirtualTransactionType;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadCurrencyVirtualTransactionType;
 import br.com.theroguedev.api.currency.virtual.controller.doc.TransactionTypeControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.TransactionTypeRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.TransactionTypeResponse;
@@ -11,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class TransactionTypeController implements TransactionTypeControllerDoc {
     private final TransactionTypeMapper transactionTypeMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_type:get_all')")
+    @CanReadCurrencyVirtualTransactionType
     public ResponseEntity<List<TransactionTypeResponse>> getAll() {
         return ResponseEntity.ok(transactionTypeService.findAll()
                 .stream()
@@ -34,7 +35,7 @@ public class TransactionTypeController implements TransactionTypeControllerDoc {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_type:get_by_id')")
+    @CanReadCurrencyVirtualTransactionType
     public ResponseEntity<TransactionTypeResponse> getById(@PathVariable Long id) {
         return transactionTypeService.findById(id)
                 .map(type -> ResponseEntity.ok(transactionTypeMapper.toResponse(type)))
@@ -42,7 +43,7 @@ public class TransactionTypeController implements TransactionTypeControllerDoc {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_type:create')")
+    @CanCreateCurrencyVirtualTransactionType
     public ResponseEntity<TransactionTypeResponse> save(@RequestBody @Valid TransactionTypeRequest request) {
         TransactionType newTransactionType = transactionTypeMapper.toTransactionType(request);
         TransactionType savedTransactionType = transactionTypeService.save(newTransactionType);
