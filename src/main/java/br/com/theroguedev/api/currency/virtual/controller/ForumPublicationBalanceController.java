@@ -1,7 +1,9 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
-import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.config.security.JWTUserData;
+import br.com.theroguedev.api.config.security.annotation.create.CanCreateCurrencyVirtualForumPublicationBalance;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadCurrencyVirtualForumPublicationBalance;
 import br.com.theroguedev.api.currency.virtual.controller.doc.ForumPublicationBalanceControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.ForumPublicationBalanceRequest;
 import br.com.theroguedev.api.currency.virtual.dto.request.ForumPublicationBalanceVoteRequest;
@@ -14,7 +16,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class ForumPublicationBalanceController implements ForumPublicationBalanc
     private final ForumPublicationBalanceMapper forumPublicationBalanceMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication_balance:get_all')")
+    @CanReadCurrencyVirtualForumPublicationBalance
     public ResponseEntity<List<ForumPublicationBalanceResponse>> getAll() {
         return ResponseEntity.ok(forumPublicationBalanceService.findAll()
                 .stream()
@@ -40,7 +41,7 @@ public class ForumPublicationBalanceController implements ForumPublicationBalanc
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication_balance:get_by_id')")
+    @CanReadCurrencyVirtualForumPublicationBalance
     public ResponseEntity<ForumPublicationBalanceResponse> getById(@PathVariable UUID id) {
         return forumPublicationBalanceService.findById(id)
                 .map(type -> ResponseEntity.ok(forumPublicationBalanceMapper.toResponse(type)))
@@ -48,7 +49,7 @@ public class ForumPublicationBalanceController implements ForumPublicationBalanc
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication_balance:create')")
+    @CanCreateCurrencyVirtualForumPublicationBalance
     public ResponseEntity<ForumPublicationBalanceResponse> save(@RequestBody @Valid ForumPublicationBalanceRequest request) {
         ForumPublicationBalance newForumPublicationBalance = forumPublicationBalanceMapper.toForumPublicationBalance(request);
         ForumPublicationBalance savedForumPublicationBalance = forumPublicationBalanceService.save(newForumPublicationBalance);
@@ -56,7 +57,7 @@ public class ForumPublicationBalanceController implements ForumPublicationBalanc
     }
 
     @PostMapping("/upvote")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication_balance:vote')")
+    @CanCreateCurrencyVirtualForumPublicationBalance
     public ResponseEntity<ForumPublicationBalanceResponse> upvote(@RequestBody @Valid ForumPublicationBalanceVoteRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -67,7 +68,7 @@ public class ForumPublicationBalanceController implements ForumPublicationBalanc
     }
 
     @PostMapping("/downvote")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('forum_publication_balance:vote')")
+    @CanCreateCurrencyVirtualForumPublicationBalance
     public ResponseEntity<ForumPublicationBalanceResponse> downvote(@RequestBody @Valid ForumPublicationBalanceVoteRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

@@ -1,6 +1,8 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
+import br.com.theroguedev.api.config.security.annotation.create.CanCreateCurrencyVirtualTransactionParameter;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadCurrencyVirtualTransactionParameter;
 import br.com.theroguedev.api.currency.virtual.controller.doc.TransactionParameterControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.TransactionParameterRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.TransactionParameterResponse;
@@ -11,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class TransactionParameterController implements TransactionParameterContr
     private final TransactionParameterMapper transactionParameterMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_parameter:get_all')")
+    @CanReadCurrencyVirtualTransactionParameter
     public ResponseEntity<List<TransactionParameterResponse>> getAll() {
         return ResponseEntity.ok(transactionParameterService.findAll()
                 .stream()
@@ -34,7 +35,7 @@ public class TransactionParameterController implements TransactionParameterContr
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_parameter:get_by_id')")
+    @CanReadCurrencyVirtualTransactionParameter
     public ResponseEntity<TransactionParameterResponse> getById(@PathVariable Long id) {
         return transactionParameterService.findById(id)
                 .map(type -> ResponseEntity.ok(transactionParameterMapper.toResponse(type)))
@@ -42,7 +43,7 @@ public class TransactionParameterController implements TransactionParameterContr
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('transaction_parameter:create')")
+    @CanCreateCurrencyVirtualTransactionParameter
     public ResponseEntity<TransactionParameterResponse> save(@RequestBody @Valid TransactionParameterRequest request) {
         TransactionParameter newTransactionParameter = transactionParameterMapper.toTransactionParameter(request);
         TransactionParameter savedTransactionParameter = transactionParameterService.save(newTransactionParameter);

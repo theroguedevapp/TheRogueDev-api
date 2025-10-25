@@ -1,7 +1,7 @@
 package br.com.theroguedev.api.currency.virtual.service;
 
-import br.com.theroguedev.api.currency.virtual.entity.UserWallet;
 import br.com.theroguedev.api.currency.virtual.entity.VirtualCurrency;
+import br.com.theroguedev.api.currency.virtual.entity.UserWallet;
 import br.com.theroguedev.api.currency.virtual.repository.UserWalletRepository;
 import br.com.theroguedev.api.exceptions.CustomNotFoundException;
 import br.com.theroguedev.api.exceptions.UnauthorizedException;

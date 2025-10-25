@@ -19,7 +19,7 @@ public class ImgBBController {
     private final ImgBBService imgBBService;
 
     @PostMapping("/upload")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('image:upload')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_admin:all'")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(imgBBService.uploadImage(file));
     }

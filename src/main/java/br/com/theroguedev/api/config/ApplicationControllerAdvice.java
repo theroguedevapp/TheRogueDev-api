@@ -1,13 +1,13 @@
 package br.com.theroguedev.api.config;
 
-import br.com.theroguedev.api.exceptions.CustomBadRequestException;
-import br.com.theroguedev.api.exceptions.CustomNotFoundException;
-import br.com.theroguedev.api.exceptions.UnauthorizedException;
-import br.com.theroguedev.api.exceptions.UsernameOrPasswordInvalidException;
+import br.com.theroguedev.api.exceptions.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice
 public class ApplicationControllerAdvice {
@@ -19,9 +19,9 @@ public class ApplicationControllerAdvice {
     }
 
 
-    @ExceptionHandler(UsernameOrPasswordInvalidException.class)
+    @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleUsernameOrPasswordInvalidException(UsernameOrPasswordInvalidException exception) {
+    public String handleBadCredentialsExceptionException(BadCredentialsException exception) {
         return exception.getMessage();
     }
 
@@ -37,5 +37,15 @@ public class ApplicationControllerAdvice {
         return exception.getMessage();
     }
 
+    @ExceptionHandler(UniqueAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleUniqueAlreadyExistsException(UniqueAlreadyExistsException exception) {
+        return exception.getMessage();
+    }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleAccessDeniedException(AccessDeniedException exception) {
+        return exception.getMessage();
+    }
 }

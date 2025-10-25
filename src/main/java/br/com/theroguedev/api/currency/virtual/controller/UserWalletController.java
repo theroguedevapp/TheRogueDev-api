@@ -1,6 +1,7 @@
 package br.com.theroguedev.api.currency.virtual.controller;
 
 
+import br.com.theroguedev.api.config.security.annotation.read.CanReadCurrencyVirtualUserWallet;
 import br.com.theroguedev.api.currency.virtual.controller.doc.UserWalletControllerDoc;
 import br.com.theroguedev.api.currency.virtual.dto.request.UserWalletRequest;
 import br.com.theroguedev.api.currency.virtual.dto.response.UserWalletResponse;
@@ -11,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class UserWalletController implements UserWalletControllerDoc {
     private final UserWalletMapper userWalletMapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_wallet:get_all')")
+    @CanReadCurrencyVirtualUserWallet
     public ResponseEntity<List<UserWalletResponse>> getAll() {
         return ResponseEntity.ok(userWalletService.findAll()
                 .stream()
@@ -35,7 +35,7 @@ public class UserWalletController implements UserWalletControllerDoc {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_wallet:get_by_id')")
+    @CanReadCurrencyVirtualUserWallet
     public ResponseEntity<UserWalletResponse> getById(@PathVariable UUID id) {
         return userWalletService.findById(id)
                 .map(type -> ResponseEntity.ok(userWalletMapper.toResponse(type)))
@@ -43,7 +43,7 @@ public class UserWalletController implements UserWalletControllerDoc {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_wallet:create')")
+    @CanReadCurrencyVirtualUserWallet
     public ResponseEntity<UserWalletResponse> save(@RequestBody @Valid UserWalletRequest request) {
         UserWallet newUserWallet = userWalletMapper.toUserWallet(request);
         UserWallet savedUserWallet = userWalletService.save(newUserWallet);

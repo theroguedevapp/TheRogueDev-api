@@ -1,7 +1,5 @@
 package br.com.theroguedev.api.user.controller;
 
-import br.com.theroguedev.api.config.TokenService;
-import br.com.theroguedev.api.exceptions.UsernameOrPasswordInvalidException;
 import br.com.theroguedev.api.user.controller.doc.AuthControllerDoc;
 import br.com.theroguedev.api.user.dto.request.LoginRequest;
 import br.com.theroguedev.api.user.dto.request.UserRequest;
@@ -9,16 +7,13 @@ import br.com.theroguedev.api.user.dto.response.AuthenticatedUserResponse;
 import br.com.theroguedev.api.user.dto.response.LoginResponse;
 import br.com.theroguedev.api.user.entity.User;
 import br.com.theroguedev.api.user.mapper.UserMapper;
+import br.com.theroguedev.api.user.service.AuthService;
 import br.com.theroguedev.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,32 +21,22 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController implements AuthControllerDoc {
 
-    private final AuthenticationManager authenticationManager;
-    private final TokenService tokenService;
+    private final AuthService authService;
     private final UserService userService;
     private final UserMapper userMapper;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        try {
 
-            UsernamePasswordAuthenticationToken usernameAndPassword = new UsernamePasswordAuthenticationToken(request.email(), request.password());
-            Authentication authentication = authenticationManager.authenticate(usernameAndPassword);
+        String token = authService.login(request);
 
-            User user = (User) authentication.getPrincipal();
+        ResponseCookie cookie = authService.generateCookie(token);
 
-            String token = tokenService.gerenateToken(user);
+        LoginResponse loginResponse = LoginResponse.builder()
+                .message("Login Realizado com sucesso!")
+                .build();
 
-            ResponseCookie cookie = tokenService.generateCookie(token);
-
-            AuthenticatedUserResponse userResponse = userMapper.toAuthenticatedUserResponse(user);
-
-            return  ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new LoginResponse(userResponse));
-
-
-        } catch (BadCredentialsException exception) {
-            throw new UsernameOrPasswordInvalidException("Usuário ou senha inválido.");
-        }
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(loginResponse);
     }
 
     @PostMapping("/register")

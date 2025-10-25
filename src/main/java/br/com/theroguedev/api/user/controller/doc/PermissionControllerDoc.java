@@ -41,19 +41,4 @@ public interface PermissionControllerDoc {
             description = "Permission not found"
     )
     ResponseEntity<PermissionResponse> getById(@Parameter(description = "Permission ID") Long id);
-
-    @Operation(
-            summary = "Create permission",
-            description = "Create a new permission"
-    )
-    @ApiResponse(
-            responseCode = "201",
-            description = "Permission created successfully",
-            content = @Content(schema = @Schema(implementation = PermissionResponse.class))
-    )
-    @ApiResponse(
-            responseCode = "400",
-            description = "Invalid permission data"
-    )
-    ResponseEntity<PermissionResponse> save(PermissionRequest request);
 }

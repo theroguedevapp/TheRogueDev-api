@@ -1,7 +1,5 @@
 package br.com.theroguedev.api.user.controller.doc;
 
-import br.com.theroguedev.api.user.dto.request.UserRequest;
-import br.com.theroguedev.api.user.dto.response.AuthenticatedUserResponse;
 import br.com.theroguedev.api.user.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -58,19 +56,4 @@ public interface UserControllerDoc {
             description = "User not found"
     )
     ResponseEntity<UserResponse> getByUsername(@Parameter(description = "Username") String username);
-
-    @Operation(
-            summary = "Create user",
-            description = "Create a new user account"
-    )
-    @ApiResponse(
-            responseCode = "201",
-            description = "User created successfully",
-            content = @Content(schema = @Schema(implementation = AuthenticatedUserResponse.class))
-    )
-    @ApiResponse(
-            responseCode = "400",
-            description = "Invalid user data"
-    )
-    ResponseEntity<UserResponse> save(UserRequest request);
 }

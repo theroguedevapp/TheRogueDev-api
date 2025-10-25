@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +23,8 @@ public class PermissionInitializer {
 
     @Autowired
     private PermissionService permissionService;
+
+    private static final Pattern PERMISSION_PATTERN = Pattern.compile("hasAnyAuthority\\((.*?)\\)");
 
     @PostConstruct
     @Transactional
@@ -33,18 +37,37 @@ public class PermissionInitializer {
 
         Set<Class<?>> controllerClasses = reflections.getTypesAnnotatedWith(RestController.class);
 
-        Pattern permissionPattern = Pattern.compile("hasAuthority\\('([^']+)'\\)");
-
         for (Class<?> controllerClass : controllerClasses) {
-            for (var method : controllerClass.getDeclaredMethods()) {
+            for (Method method : controllerClass.getDeclaredMethods()) {
+
                 if (method.isAnnotationPresent(PreAuthorize.class)) {
                     String expression = method.getAnnotation(PreAuthorize.class).value();
+                    extractPermissionsFromExpression(expression);
+                }
 
-                    Matcher matcher = permissionPattern.matcher(expression);
-                    while (matcher.find()) {
-                        String permission = matcher.group(1);
-                        permissionService.registerPermission(permission);
+                for (Annotation annotation : method.getAnnotations()) {
+                    PreAuthorize metaPreAuth = annotation.annotationType().getAnnotation(PreAuthorize.class);
+                    if (metaPreAuth != null) {
+                        String expression = metaPreAuth.value();
+                        extractPermissionsFromExpression(expression);
                     }
+                }
+            }
+        }
+    }
+
+    private void extractPermissionsFromExpression(String expression) {
+        Matcher matcher = PERMISSION_PATTERN.matcher(expression);
+        while (matcher.find()) {
+            String group = matcher.group(1);
+            String[] permissions = group.split(",");
+
+            for (String rawPermission : permissions) {
+                String permission = rawPermission.trim()
+                        .replaceAll("['\"]", "")
+                        .replaceFirst("^SCOPE_", "");
+                if (!permission.isEmpty()) {
+                    permissionService.registerPermission(permission);
                 }
             }
         }

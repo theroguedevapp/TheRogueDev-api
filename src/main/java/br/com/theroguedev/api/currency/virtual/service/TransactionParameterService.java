@@ -1,17 +1,14 @@
 package br.com.theroguedev.api.currency.virtual.service;
 
-import br.com.theroguedev.api.currency.virtual.entity.Transaction;
 import br.com.theroguedev.api.currency.virtual.entity.TransactionParameter;
 import br.com.theroguedev.api.currency.virtual.entity.VirtualCurrency;
 import br.com.theroguedev.api.currency.virtual.repository.TransactionParameterRepository;
-import br.com.theroguedev.api.currency.virtual.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

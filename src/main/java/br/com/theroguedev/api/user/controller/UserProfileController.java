@@ -1,23 +1,16 @@
 package br.com.theroguedev.api.user.controller;
 
-
-import br.com.theroguedev.api.config.JWTUserData;
+import br.com.theroguedev.api.config.security.JWTUserData;
+import br.com.theroguedev.api.config.security.annotation.read.CanReadUserProfile;
+import br.com.theroguedev.api.config.security.annotation.update.CanUpdateUserProfile;
 import br.com.theroguedev.api.user.controller.doc.UserProfileControllerDoc;
-import br.com.theroguedev.api.user.dto.request.UserProfileRequest;
-import br.com.theroguedev.api.user.dto.request.UserRequest;
 import br.com.theroguedev.api.user.dto.response.UserProfileResponse;
-import br.com.theroguedev.api.user.dto.response.UserResponse;
-import br.com.theroguedev.api.user.entity.User;
 import br.com.theroguedev.api.user.entity.UserProfile;
-import br.com.theroguedev.api.user.mapper.UserMapper;
 import br.com.theroguedev.api.user.mapper.UserProfileMapper;
 import br.com.theroguedev.api.user.service.AuthService;
 import br.com.theroguedev.api.user.service.UserProfileService;
-import br.com.theroguedev.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +28,8 @@ public class UserProfileController implements UserProfileControllerDoc {
     private final UserProfileMapper userProfileMapper;
     private final AuthService authService;
 
-
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:get_all')")
+    @CanReadUserProfile
     public ResponseEntity<List<UserProfileResponse>> getAll() {
         return ResponseEntity.ok(userProfileService.findAll()
                 .stream()
@@ -46,7 +38,7 @@ public class UserProfileController implements UserProfileControllerDoc {
     }
 
     @GetMapping("/id/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:get_by_id')")
+    @CanReadUserProfile
     public ResponseEntity<UserProfileResponse> getById(@PathVariable UUID id) {
         return userProfileService.findById(id)
                 .map(userProfile -> ResponseEntity.ok(userProfileMapper.toResponse(userProfile)))
@@ -54,13 +46,12 @@ public class UserProfileController implements UserProfileControllerDoc {
     }
 
     @GetMapping("/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:get_by_username')")
+    @CanReadUserProfile
     public ResponseEntity<UserProfileResponse> getByUsername(@PathVariable String username) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         JWTUserData userData = (JWTUserData) authentication.getPrincipal();
-
 
         return userProfileService.findById(userData.id())
                 .map(userProfile -> ResponseEntity.ok(userProfileMapper.toResponse(userProfile)))
@@ -68,8 +59,8 @@ public class UserProfileController implements UserProfileControllerDoc {
     }
 
     @PatchMapping("/pic/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:change-profile-pic')")
-    public ResponseEntity<UserProfileResponse> changeProfilePic(@PathVariable String username, @RequestParam("file")MultipartFile file) {
+    @CanUpdateUserProfile
+    public ResponseEntity<UserProfileResponse> changeProfilePic(@PathVariable String username, @RequestParam("file") MultipartFile file) {
 
         JWTUserData userData = authService.validateUserAccess(username);
         UserProfile userProfile = userProfileService.changeProfilePic(file, userData.id());
@@ -78,8 +69,8 @@ public class UserProfileController implements UserProfileControllerDoc {
     }
 
     @PatchMapping("/banner/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasAuthority('user_profile:change-profile-banner')")
-    public ResponseEntity<UserProfileResponse> changeProfileBanner(@PathVariable String username, @RequestParam("file")MultipartFile file) {
+    @CanUpdateUserProfile
+    public ResponseEntity<UserProfileResponse> changeProfileBanner(@PathVariable String username, @RequestParam("file") MultipartFile file) {
 
         JWTUserData userData = authService.validateUserAccess(username);
         UserProfile userProfile = userProfileService.changeProfileBanner(file, userData.id());
