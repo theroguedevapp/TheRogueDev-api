@@ -1,0 +1,37 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+springdoc:
+  api-docs:
+    path: /api/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger/index.html
+    enabled: true
+    with-credentials: true
+    doc-expansion: none
+    default-model-expand-depth: 0
+    display-request-duration: true
+    filter: true
+    persist-authorization: true
+    layout: StandaloneLayout
+    show-extensions: false
+    operations-sorter: method
+
+jwt:
+  cookie-secure: false
+
+cors:
+  allowed-origins: http://localhost:4200
+
+logging:
+  level:
+    root: INFO
+    br.com.theroguedev: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE

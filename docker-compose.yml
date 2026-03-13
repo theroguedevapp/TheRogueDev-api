@@ -1,0 +1,19 @@
+# Dev only — sobe apenas o banco de dados para desenvolvimento local.
+# Para subir a stack completa (DB + API + Frontend), use o docker-compose.yml na raiz do projeto.
+
+services:
+    postgres:
+      image: postgres:latest
+      container_name: the-rogue-dev-db
+      environment:
+        POSTGRES_DB: ${DATABASE_NAME}
+        POSTGRES_USER: ${DATABASE_USERNAME}
+        POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      ports:
+        - "${POSTGRES_PORT}:5432"
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      restart: always
+
+volumes:
+  postgres_data:

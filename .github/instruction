@@ -1,0 +1,25 @@
+# File Generation Guidelines
+
+## Purpose
+This document outlines guidelines for generating files in the project to maintain consistency and avoid unnecessary clutter.
+
+## Restrictions
+1. **Avoid Generating the Following File Types**:
+   - `.sh` (Shell scripts)
+   - `.ps1` (PowerShell scripts)
+   - `.md` (Markdown documentation files)
+
+2. **Exceptions**:
+   - These file types may only be generated if explicitly requested by the user or required for a specific task.
+
+## Examples
+### Acceptable
+- Generating Java classes, configuration files, or database migration scripts.
+- Creating `.yml` files for configuration purposes.
+
+### Unacceptable
+- Generating a `.sh` script for deployment without explicit user approval.
+- Creating a `.md` file for documentation without a specific request.
+
+## Rationale
+These restrictions ensure that the project remains focused and avoids unnecessary files that may not align with the user's workflow or preferences.

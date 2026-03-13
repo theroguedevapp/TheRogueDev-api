@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    show-sql: false
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+jwt:
+  cookie-secure: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
+logging:
+  level:
+    root: WARN
+    br.com.theroguedev: INFO
