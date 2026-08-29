@@ -1,0 +1,19 @@
+# Impede o Continue de indexar lixo de build e segredos no @codebase.
+build/
+.gradle/
+bin/
+out/
+
+# Segredos — NUNCA mandar para o modelo
+.env
+.env.*
+**/authz.pem
+**/authz.pub
+**/application-local.yml
+
+# Binarios e ruido
+gradle/wrapper/gradle-wrapper.jar
+*.jar
+*.war
+*.class
+*.log
