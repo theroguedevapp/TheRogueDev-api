@@ -37,3 +37,20 @@ out/
 .vscode/
 
 .env
+.env.prod
+
+### SEGREDOS — nada abaixo pode ir para o repositorio ###
+# Chaves RSA que assinam o JWT. A privada NUNCA entra no commit:
+# quem tiver authz.pem forja token de qualquer usuario.
+# A publica (authz.pub) e inofensiva e continua versionada — o app precisa dela
+# via classpath:authz.pub em application.yml.
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+!src/main/resources/authz.pub
+
+# Regerar o par, se necessario:
+#   openssl genpkey -algorithm RSA -out authz.pem -pkeyopt rsa_keygen_bits:2048
+#   openssl rsa -pubout -in authz.pem -out authz.pub
